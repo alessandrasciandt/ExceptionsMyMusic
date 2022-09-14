@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MusicController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ExceptionsMyMusic</a> &gt; <a href="index.source.html" class="el_package">com.ciandt.ExceptionsMyMusic.application.controllers</a> &gt; <span class="el_source">MusicController.java</span></div><h1>MusicController.java</h1><pre class="source lang-java linenums">package com.ciandt.ExceptionsMyMusic.application.controllers;
+
+import com.ciandt.ExceptionsMyMusic.domain.dto.Data;
+import com.ciandt.ExceptionsMyMusic.domain.dto.DataDTO;
+import com.ciandt.ExceptionsMyMusic.domain.dto.MusicDTO;
+import com.ciandt.ExceptionsMyMusic.domain.dto.TokenDataDTO;
+import com.ciandt.ExceptionsMyMusic.domain.services.MusicService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping
+<span class="fc" id="L21">public class MusicController {</span>
+    private static final String AUTHORIZATION_ID_HEADER = &quot;id&quot;;
+    private static final String AUTHORIZATION_TOKEN_HEADER = &quot;token&quot;;
+<span class="fc" id="L24">    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(MusicController.class);</span>
+
+    @Autowired
+    private MusicService musicService;
+
+    @Operation(summary = &quot;Search songs by artist name or song name&quot;, description = &quot;Search by artist name or song name. Filter search is not case sensitive. The filter must be at least 3 characters long.&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = &quot;Successful Operation&quot;),
+            @ApiResponse(code = 204, message = &quot;No results&quot;),
+            @ApiResponse(code = 400, message = &quot;Not enough characters&quot;)
+    })
+    @GetMapping(value = &quot;/musicas&quot;)
+    public ResponseEntity&lt;?&gt; findMusicandArtistByName(@RequestParam(value = &quot;filter&quot;) String id,
+                                                      @RequestHeader(AUTHORIZATION_ID_HEADER) String userId,
+                                                      @RequestHeader(AUTHORIZATION_TOKEN_HEADER) String token) {
+<span class="fc" id="L39">        TokenDataDTO tokenDataDTO = new TokenDataDTO(new Data(userId, token));</span>
+<span class="fc" id="L40">        List&lt;MusicDTO&gt; dtoMusic = musicService.findByArtistOrMusic(id, tokenDataDTO);</span>
+
+<span class="fc" id="L42">        LOGGER.info(&quot;Operation performed successfully!&quot;);</span>
+<span class="fc" id="L43">        return ResponseEntity.ok().body(new DataDTO(dtoMusic));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

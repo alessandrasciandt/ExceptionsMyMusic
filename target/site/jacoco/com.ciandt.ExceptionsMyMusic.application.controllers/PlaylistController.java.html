@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>PlaylistController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ExceptionsMyMusic</a> &gt; <a href="index.source.html" class="el_package">com.ciandt.ExceptionsMyMusic.application.controllers</a> &gt; <span class="el_source">PlaylistController.java</span></div><h1>PlaylistController.java</h1><pre class="source lang-java linenums">package com.ciandt.ExceptionsMyMusic.application.controllers;
+
+import com.ciandt.ExceptionsMyMusic.domain.dto.Data;
+import com.ciandt.ExceptionsMyMusic.domain.dto.DataDTO;
+import com.ciandt.ExceptionsMyMusic.domain.dto.MusicDTO;
+import com.ciandt.ExceptionsMyMusic.domain.dto.TokenDataDTO;
+import com.ciandt.ExceptionsMyMusic.domain.entities.Playlist;
+import com.ciandt.ExceptionsMyMusic.domain.services.PlaylistService;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import io.swagger.v3.oas.annotations.Operation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping(value = &quot;/playlists&quot;)
+<span class="fc" id="L21">public class PlaylistController {</span>
+    private static final String AUTHORIZATION_ID_HEADER = &quot;id&quot;;
+    private static final String AUTHORIZATION_TOKEN_HEADER = &quot;token&quot;;
+<span class="fc" id="L24">    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(PlaylistController.class);</span>
+
+    @Autowired
+    private PlaylistService playlistService;
+
+    @Operation(summary = &quot;Add music to playlist&quot;, description = &quot;Receive a list of songs and add them to the playlist&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = &quot;Successful Operation&quot;),
+            @ApiResponse(code = 400, message = &quot;Playlist Does Not Exist OR Existing Song in Playlist OR Payload Body Does Not Conform to Documentation&quot;),
+    })
+
+    @PostMapping(&quot;/{playlistId}/musicas&quot;)
+    public ResponseEntity&lt;Playlist&gt; findMusicandArtistByName(@PathVariable(value = &quot;playlistId&quot;) String playlistId,
+                                                             @RequestBody DataDTO dataDTO,
+                                                             @RequestHeader(AUTHORIZATION_ID_HEADER) String userId,
+                                                             @RequestHeader(AUTHORIZATION_TOKEN_HEADER) String token) {
+<span class="fc" id="L40">        TokenDataDTO tokenDataDTO = new TokenDataDTO(new Data(userId, token));</span>
+<span class="fc" id="L41">        MusicDTO musicDTO = dataDTO.getData().get(0);</span>
+<span class="fc" id="L42">        playlistService.addMusicToPlaylist(playlistId, musicDTO, tokenDataDTO);</span>
+
+<span class="fc" id="L44">        LOGGER.info(&quot;Operation performed successfully!&quot;);</span>
+<span class="fc" id="L45">        return new ResponseEntity&lt;Playlist&gt;(HttpStatus.CREATED);</span>
+    }
+
+    @DeleteMapping(&quot;/{playlistId}/musicas/{musicaId}&quot;)
+    @Operation(summary = &quot;Remove music from playlist&quot;, description = &quot;Receive a list of songs and add them to the playlist&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = &quot;Successful Operation&quot;),
+            @ApiResponse(code = 400, message = &quot;Playlist Does Not Exist OR Existing Song in Playlist OR Payload Body Does Not Conform to Documentation&quot;),
+    })
+    public ResponseEntity&lt;String&gt; removeMusicFromPlaylist(@PathVariable(value = &quot;playlistId&quot;) String playlistId,
+                                                          @PathVariable(value = &quot;musicaId&quot;) String musicaId,
+                                                          @RequestHeader(AUTHORIZATION_ID_HEADER) String userId,
+                                                          @RequestHeader(AUTHORIZATION_TOKEN_HEADER) String token
+    ) {
+<span class="fc" id="L59">        TokenDataDTO tokenDataDTO = new TokenDataDTO(new Data(userId, token));</span>
+<span class="fc" id="L60">        playlistService.removeMusicToPlaylist(playlistId, musicaId, tokenDataDTO);</span>
+
+<span class="fc" id="L62">        return ResponseEntity.ok().body(&quot;Song successfully deleted!&quot;);</span>
+    }
+
+    @PostMapping(&quot;/{playlistId}/{userId}/musicas&quot;)
+    public ResponseEntity&lt;Playlist&gt; addMusicUserPlaylist(@PathVariable(value = &quot;playlistId&quot;) String playlistId,
+                                                         @PathVariable(value = &quot;userId&quot;) String userId,
+                                                         @RequestBody DataDTO dataDTO,
+                                                         @RequestHeader(AUTHORIZATION_ID_HEADER) String userTokenId,
+                                                         @RequestHeader(AUTHORIZATION_TOKEN_HEADER) String token) {
+<span class="nc" id="L71">        TokenDataDTO tokenDataDTO = new TokenDataDTO(new Data(userTokenId, token));</span>
+<span class="nc" id="L72">        MusicDTO musicDTO = dataDTO.getData().get(0);</span>
+<span class="nc" id="L73">        playlistService.addMusicToPlaylistCheckingUserType(playlistId, userId, musicDTO, tokenDataDTO);</span>
+
+<span class="nc" id="L75">        LOGGER.info(&quot;Operation performed successfully!&quot;);</span>
+<span class="nc" id="L76">        return new ResponseEntity&lt;Playlist&gt;(HttpStatus.CREATED);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

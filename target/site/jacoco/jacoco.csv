@@ -1,0 +1,8 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+ExceptionsMyMusic,com.ciandt.ExceptionsMyMusic.application.controllers,UserController,0,24,0,0,0,6,0,4,0,4
+ExceptionsMyMusic,com.ciandt.ExceptionsMyMusic.application.controllers,MusicController,0,32,0,0,0,6,0,3,0,3
+ExceptionsMyMusic,com.ciandt.ExceptionsMyMusic.application.controllers,PlaylistController,30,55,0,0,5,10,1,4,1,4
+ExceptionsMyMusic,com.ciandt.ExceptionsMyMusic.domain.services,TokenService,52,7,6,0,12,2,5,2,2,2
+ExceptionsMyMusic,com.ciandt.ExceptionsMyMusic.domain.services,MusicService,0,63,0,4,0,15,0,6,0,4
+ExceptionsMyMusic,com.ciandt.ExceptionsMyMusic.domain.services,PlaylistService,88,116,10,8,19,27,8,6,1,4
+ExceptionsMyMusic,com.ciandt.ExceptionsMyMusic.domain.services,UserService,0,35,0,2,0,9,0,4,0,3

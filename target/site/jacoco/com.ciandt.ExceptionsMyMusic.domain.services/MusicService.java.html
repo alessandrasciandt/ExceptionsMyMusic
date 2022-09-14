@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MusicService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ExceptionsMyMusic</a> &gt; <a href="index.source.html" class="el_package">com.ciandt.ExceptionsMyMusic.domain.services</a> &gt; <span class="el_source">MusicService.java</span></div><h1>MusicService.java</h1><pre class="source lang-java linenums">package com.ciandt.ExceptionsMyMusic.domain.services;
+
+import com.ciandt.ExceptionsMyMusic.application.repositories.MusicRepository;
+import com.ciandt.ExceptionsMyMusic.domain.dto.MusicDTO;
+import com.ciandt.ExceptionsMyMusic.domain.dto.TokenDataDTO;
+import com.ciandt.ExceptionsMyMusic.domain.entities.Music;
+import com.ciandt.ExceptionsMyMusic.domain.services.exceptions.NoContentException;
+import com.ciandt.ExceptionsMyMusic.domain.services.exceptions.ResourceNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+<span class="fc" id="L19">public class MusicService {</span>
+<span class="fc" id="L20">    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(MusicService.class);</span>
+
+    @Autowired
+    private MusicRepository musicRepository;
+
+    @Autowired
+    private TokenService tokenService;
+
+    @Transactional(readOnly = true)
+    public List&lt;MusicDTO&gt; findByArtistOrMusic(String nome, TokenDataDTO tokenDataDTO) {
+<span class="fc" id="L30">        tokenService.validateHeader(tokenDataDTO);</span>
+
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        if (nome.length() &lt;= 2) {</span>
+<span class="fc" id="L33">            LOGGER.error(&quot;Filter is less than 3 characters long, so invalid search&quot;);</span>
+<span class="fc" id="L34">            throw new ResourceNotFoundException(&quot;Filter must be 3 or more characters long&quot;);</span>
+        }
+
+<span class="fc" id="L37">        LOGGER.info(&quot;Search performed successfully, because filter has more than 2 characters&quot;);</span>
+<span class="fc" id="L38">        List&lt;Music&gt; list = musicRepository.findByArtistOrNameOfMusic(nome);</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">        if (list.isEmpty()) {</span>
+<span class="fc" id="L40">            LOGGER.error(&quot;The filter did not return data for the search performed!&quot;);</span>
+<span class="fc" id="L41">            throw new NoContentException(&quot;Data not found&quot;);</span>
+        }
+
+<span class="fc" id="L44">        LOGGER.info(&quot;Search performed successfully, as data found in the database&quot;);</span>
+<span class="fc" id="L45">        List&lt;MusicDTO&gt; listDTO = list.stream().map(music -&gt; new MusicDTO(music)).collect(Collectors.toList());</span>
+
+<span class="fc" id="L47">        LOGGER.info(&quot;Data returned successfully!&quot;);</span>
+<span class="fc" id="L48">        return listDTO;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

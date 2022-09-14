@@ -1,0 +1,9 @@
+com/ciandt/ExceptionsMyMusic/domain/services/TokenServiceTests.class
+com/ciandt/ExceptionsMyMusic/applications/controller/MusicControllerTests.class
+com/ciandt/ExceptionsMyMusic/ApplicationConfigTest.class
+com/ciandt/ExceptionsMyMusic/ExceptionsMyMusicApplicationTests.class
+com/ciandt/ExceptionsMyMusic/domain/services/UserServiceTests.class
+com/ciandt/ExceptionsMyMusic/domain/services/MusicServiceTests.class
+com/ciandt/ExceptionsMyMusic/applications/controller/UserControllerTests.class
+com/ciandt/ExceptionsMyMusic/domain/services/PlaylistServiceTests.class
+com/ciandt/ExceptionsMyMusic/applications/controller/PlaylistControllerTests.class

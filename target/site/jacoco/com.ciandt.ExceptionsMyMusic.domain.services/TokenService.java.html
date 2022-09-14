@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TokenService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ExceptionsMyMusic</a> &gt; <a href="index.source.html" class="el_package">com.ciandt.ExceptionsMyMusic.domain.services</a> &gt; <span class="el_source">TokenService.java</span></div><h1>TokenService.java</h1><pre class="source lang-java linenums">package com.ciandt.ExceptionsMyMusic.domain.services;
+
+import com.ciandt.ExceptionsMyMusic.application.client.MyFeignClient;
+import com.ciandt.ExceptionsMyMusic.domain.dto.TokenDataDTO;
+import com.ciandt.ExceptionsMyMusic.domain.dto.UserDTO;
+import com.ciandt.ExceptionsMyMusic.domain.services.exceptions.ResourceNotFoundException;
+import feign.FeignException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+
+@Service
+@Component
+<span class="fc" id="L16">public class TokenService {</span>
+<span class="fc" id="L17">    private static final Logger LOGGER = (Logger) LoggerFactory.getLogger(TokenService.class);</span>
+
+    @Autowired
+    private MyFeignClient myFeignClient;
+
+    @Autowired
+    private UserService userService;
+
+    public String generateToken(TokenDataDTO userIdDTO) {
+<span class="nc bnc" id="L26" title="All 2 branches missed.">        if (userService.findUserById(userIdDTO.getData().getName()) == null) {</span>
+<span class="nc" id="L27">            LOGGER.error(&quot;Invalid user!&quot;);</span>
+<span class="nc" id="L28">            throw new ResourceNotFoundException(&quot;Invalid user&quot;);</span>
+        }
+<span class="nc" id="L30">        return myFeignClient.clientUserId(userIdDTO);</span>
+    }
+
+    public void validateHeader(TokenDataDTO tokenDataDTO) {
+        try {
+<span class="nc" id="L35">            UserDTO userDTO = userService.findUserById(tokenDataDTO.getData().getName());</span>
+<span class="nc bnc" id="L36" title="All 4 branches missed.">            if (!myFeignClient.clientValidator(tokenDataDTO).equals(&quot;ok&quot;) &amp;&amp; userDTO != null) {</span>
+<span class="nc" id="L37">                throw new ResourceNotFoundException(&quot;Invalid or expired token&quot;);</span>
+            }
+<span class="nc" id="L39">        } catch (FeignException e) {</span>
+<span class="nc" id="L40">            LOGGER.error(&quot;Invalid or expired token! Generated a new token and try again&quot;);</span>
+<span class="nc" id="L41">            throw new ResourceNotFoundException(&quot;Invalid or expired token&quot;);</span>
+<span class="nc" id="L42">        }</span>
+<span class="nc" id="L43">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
